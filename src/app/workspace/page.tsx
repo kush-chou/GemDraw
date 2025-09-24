@@ -5,14 +5,12 @@ import DummyCanvas from "@/components/cogni-canvas/dummy-canvas";
 
 export default function WorkspacePage() {
   return (
-    <main className="flex h-screen w-full justify-center items-center bg-background p-4">
-      <div className="w-full max-w-6xl h-full flex flex-row bg-card border border-border rounded-lg shadow-lg">
-        <div className="w-1/2 flex flex-col">
-          <ChatPanel />
-        </div>
-        <div className="w-1/2 flex flex-col">
-          <DummyCanvas />
-        </div>
+    <main className="h-full w-full flex flex-row">
+      <div className="w-1/2 h-full flex flex-col border-r">
+        <ChatPanel />
+      </div>
+      <div className="w-1/2 h-full flex flex-col">
+        <DummyCanvas />
       </div>
     </main>
   );

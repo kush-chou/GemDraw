@@ -8,32 +8,15 @@ import { FormEvent, useEffect, useRef, useState } from "react";
 import { chat } from "@/ai/flows/chat-flow";
 
 const GeminiLogo = () => (
-  <svg
-    viewBox="0 0 100 100"
-    xmlns="http://www.w3.org/2000/svg"
-    className="h-full w-full"
-  >
-    <defs>
-      <linearGradient id="gemini-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#4185F4" />
-        <stop offset="100%" stopColor="#2F66B0" />
-      </linearGradient>
-    </defs>
-    <path
-      fill="url(#gemini-gradient)"
-      d="M50 0 L61.8 38.2 L100 50 L61.8 61.8 L50 100 L38.2 61.8 L0 50 L38.2 38.2 Z"
-    />
-    <path
-      fill="url(#gemini-gradient)"
-      d="M85 15 L89.5 29.5 L104 34 L89.5 38.5 L85 53 L80.5 38.5 L66 34 L80.5 29.5 Z"
-    />
-  </svg>
+    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-blue-400 flex items-center justify-center text-primary-foreground font-bold text-xs">
+        AI
+    </div>
 );
 
 const initialMessages = [
   {
     role: "model" as const,
-    content: [{ text: "Hello! How can I help you today?" }],
+    content: [{ text: "Hello! How can I help you bring your ideas to life today?" }],
   },
 ];
 
@@ -99,7 +82,6 @@ export default function ChatPanel() {
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
-        // The value is already a string, no need for TextDecoder
         streamedResponse += value;
 
         setMessages((prevMessages) => {
@@ -124,10 +106,10 @@ export default function ChatPanel() {
   };
 
   return (
-    <div className="flex flex-col h-full">
-      <header className="flex h-16 flex-shrink-0 items-center border-b border-border bg-primary px-4 rounded-tl-lg">
-        <h2 className="text-lg font-semibold text-primary-foreground">
-          AI Tutor Chat
+    <div className="flex flex-col h-full bg-card">
+      <header className="flex h-16 flex-shrink-0 items-center border-b px-4">
+        <h2 className="text-lg font-semibold">
+          AI Assistant
         </h2>
       </header>
       <ScrollArea className="flex-grow p-4" ref={scrollAreaRef}>
@@ -146,11 +128,11 @@ export default function ChatPanel() {
               )}
               <div
                 className={`max-w-[75%] rounded-lg p-3 text-sm ${
-                  message.role === "user" ? "bg-primary/20" : "bg-muted"
+                  message.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted"
                 }`}
               >
                 {message.role === "model" && (
-                  <p className="font-semibold mb-1">Gemini</p>
+                  <p className="font-semibold mb-1">CogniCanvas AI</p>
                 )}
                 <p className="break-words">
                   {message.content.map((c) => c.text).join("")}
@@ -163,18 +145,17 @@ export default function ChatPanel() {
           ))}
         </div>
       </ScrollArea>
-      <div className="flex-shrink-0 border-t border-border p-4">
-        <form onSubmit={handleSubmit} className="flex items-center gap-2">
+      <div className="flex-shrink-0 border-t p-4">
+        <form onSubmit={handleSubmit} className="flex items-center gap-3">
           <Input
             type="text"
-            placeholder="Type your message..."
+            placeholder="Ask me to generate something..."
             className="flex-grow"
             value={input}
             onChange={(e) => setInput(e.target.value)}
           />
           <Button
             type="submit"
-            className="bg-accent hover:bg-accent/90 text-accent-foreground flex-shrink-0"
             size="icon"
           >
             <Send className="h-4 w-4" />
