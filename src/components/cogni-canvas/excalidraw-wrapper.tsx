@@ -5,6 +5,7 @@ import type { ExcalidrawElement } from "@excalidraw/excalidraw/types/element/typ
 import type { AppState } from "@excalidraw/excalidraw/types/types";
 
 // Use next/dynamic to load the Excalidraw component only on the client side.
+// The .Excalidraw at the end is crucial because the library exports the component as a named export.
 const Excalidraw = dynamic(
   () => import("@excalidraw/excalidraw").then((mod) => mod.Excalidraw),
   {
