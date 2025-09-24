@@ -1,6 +1,6 @@
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, MessageSquare, Image, Bot } from "lucide-react";
+import { PlusCircle, MessageSquare, Image, Bot, GraduationCap } from "lucide-react";
 import Link from "next/link";
 
 export default function DashboardPage() {
@@ -37,15 +37,20 @@ export default function DashboardPage() {
                 </Button>
               </CardContent>
             </Card>
-             <Card className="hover:border-primary/50 transition-colors">
+            <Card className="flex flex-col hover:border-primary/50 transition-colors">
               <CardHeader>
-                <CardTitle>Recent Activity</CardTitle>
-                <CardDescription>Your recent sessions will appear here.</CardDescription>
+                <CardTitle className="flex items-center gap-2">
+                    <GraduationCap className="h-5 w-5 text-primary"/>
+                    Browse Courses
+                </CardTitle>
+                <CardDescription>Explore our catalog of AI-powered courses.</CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="text-sm text-muted-foreground text-center py-8">
-                  No recent activity
-                </div>
+              <CardContent className="flex-grow flex items-end">
+                <Button asChild className="w-full">
+                  <Link href="/courses">
+                    Explore Now
+                  </Link>
+                </Button>
               </CardContent>
             </Card>
              <Card className="hover:border-primary/50 transition-colors">

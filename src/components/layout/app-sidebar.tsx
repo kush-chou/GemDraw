@@ -9,7 +9,7 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from '@/components/ui/sidebar';
-import { LayoutDashboard, MessageSquare, Settings, Image, Bot } from 'lucide-react';
+import { LayoutDashboard, MessageSquare, Settings, Image, Bot, GraduationCap } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
@@ -48,6 +48,18 @@ const AppSidebar = () => {
               <Link href="/workspace">
                 <MessageSquare />
                 <span>Workspace</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+           <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              isActive={pathname.startsWith('/courses')}
+              tooltip="Courses"
+            >
+              <Link href="/courses">
+                <GraduationCap />
+                <span>Courses</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
