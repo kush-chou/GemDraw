@@ -7,17 +7,22 @@ import { Send, Bot, Mic, Volume2, Loader2 } from "lucide-react";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { chat } from "@/ai/flows/chat-flow";
 import { textToSpeech } from "@/ai/flows/tts-flow";
+import { imageGenerationFlow } from "@/ai/flows/image-generation-flow";
+import { tool } from "@genkit-ai/ai";
+import { z } from "zod";
 
 const AILogo = () => (
-    <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground">
-        <Bot className="h-5 w-5" />
-    </div>
+  <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground">
+    <Bot className="h-5 w-5" />
+  </div>
 );
 
 const initialMessages = [
   {
     role: "model" as const,
-    content: [{ text: "Hello! How can I help you bring your ideas to life today?" }],
+    content: [
+      { text: "Hello! How can I help you bring your ideas to life today?" },
+    ],
   },
 ];
 
@@ -27,7 +32,26 @@ type Message = {
   isThinking?: boolean;
 };
 
-export default function ChatPanel() {
+export default function ChatPanel({
+  setImageUrl,
+}: {
+  setImageUrl: (url: string) => void;
+}) {
+  const createImageTool = tool(
+    {
+      name: "createImage",
+      description:
+        "A tool to create an image on the canvas based on a detailed description.",
+      inputSchema: z.string(),
+      outputSchema: z.string(),
+    },
+    async (prompt) => {
+      const url = await imageGenerationFlow(prompt);
+      setImageUrl(url);
+      return `An image has been created for the prompt: ${prompt}. It is now visible on the canvas.`;
+    },
+  );
+
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [input, setInput] = useState("");
   const [isListening, setIsListening] = useState(false);
@@ -51,29 +75,30 @@ export default function ChatPanel() {
   }, [messages]);
 
   useEffect(() => {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
     if (SpeechRecognition) {
       const recognition = new SpeechRecognition();
       recognition.continuous = false;
       recognition.interimResults = false;
-      recognition.lang = 'en-US';
-      
+      recognition.lang = "en-US";
+
       recognition.onresult = (event) => {
         const transcript = event.results[0][0].transcript;
         setInput(transcript);
-        handleSubmit(new Event('submit') as any, transcript);
+        handleSubmit(new Event("submit") as any, transcript);
         setIsListening(false);
       };
-      
+
       recognition.onerror = (event) => {
-        console.error('Speech recognition error:', event.error);
+        console.error("Speech recognition error:", event.error);
         setIsListening(false);
       };
-      
+
       recognition.onend = () => {
         setIsListening(false);
       };
-      
+
       recognitionRef.current = recognition;
     }
   }, []);
@@ -109,10 +134,9 @@ export default function ChatPanel() {
     } catch (error) {
       console.error("Error generating speech:", error);
     } finally {
-        setIsGeneratingAudio(false);
+      setIsGeneratingAudio(false);
     }
   };
-
 
   const handleSubmit = async (e: FormEvent, message?: string) => {
     e.preventDefault();
@@ -123,12 +147,7 @@ export default function ChatPanel() {
       role: "user",
       content: [{ text: currentInput }],
     };
-    const thinkingMessage: Message = {
-      role: "model",
-      content: [{ text: "Thinking..." }],
-      isThinking: true,
-    };
-    const newMessages = [...messages, newUserMessage, thinkingMessage];
+    const newMessages = [...messages, newUserMessage];
     setMessages(newMessages);
     setInput("");
 
@@ -138,50 +157,48 @@ export default function ChatPanel() {
     }));
 
     try {
-      const stream = await chat(history, currentInput);
-      const reader = stream.getReader();
+      setMessages((prev) => [
+        ...prev,
+        { role: "model", content: [{ text: "" }], isThinking: true },
+      ]);
+
+      const stream = await chat(history, currentInput, {
+        tools: [createImageTool],
+      });
       let streamedResponse = "";
-      
-      setMessages((prevMessages) =>
-        prevMessages.map((msg, index) =>
-          index === prevMessages.length - 1
-            ? { ...msg, content: [{ text: "" }], isThinking: false }
-            : msg
-        )
-      );
 
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        streamedResponse += value;
-
-        setMessages((prevMessages) => {
-          const updatedMessages = [...prevMessages];
-          const lastMessage = updatedMessages[updatedMessages.length - 1];
-          if (lastMessage && lastMessage.role === "model") {
-            lastMessage.content = [{ text: streamedResponse }];
-          }
-          return updatedMessages;
-        });
+      for await (const chunk of stream) {
+        if (chunk.content) {
+          streamedResponse = chunk.content.map((c) => c.text || "").join("");
+          setMessages((prevMessages) => {
+            const updatedMessages = [...prevMessages];
+            const lastMessage = updatedMessages[updatedMessages.length - 1];
+            if (lastMessage && lastMessage.role === "model") {
+              lastMessage.content = [{ text: streamedResponse }];
+              lastMessage.isThinking = false;
+            }
+            return updatedMessages;
+          });
+        }
       }
     } catch (error) {
       console.error("Error during chat:", error);
-      setMessages((prevMessages) =>
-        prevMessages.map((msg, index) =>
-          index === prevMessages.length - 1
-            ? { ...msg, content: [{ text: "Sorry, something went wrong." }], isThinking: false }
-            : msg
-        )
-      );
+      setMessages((prevMessages) => {
+        const updatedMessages = [...prevMessages];
+        const lastMessage = updatedMessages[updatedMessages.length - 1];
+        if (lastMessage && lastMessage.role === "model") {
+          lastMessage.content = [{ text: "Sorry, something went wrong." }];
+          lastMessage.isThinking = false;
+        }
+        return updatedMessages;
+      });
     }
   };
 
   return (
     <div className="flex flex-col h-full bg-card">
       <header className="flex h-16 flex-shrink-0 items-center border-b px-4">
-        <h2 className="text-lg font-semibold">
-          AI Assistant
-        </h2>
+        <h2 className="text-lg font-semibold">AI Assistant</h2>
       </header>
       <ScrollArea className="flex-grow p-4" ref={scrollAreaRef}>
         <div className="space-y-6">
@@ -199,27 +216,37 @@ export default function ChatPanel() {
               )}
               <div
                 className={`max-w-[80%] rounded-lg p-3 text-sm group relative ${
-                  message.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted"
+                  message.role === "user"
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-muted"
                 }`}
               >
                 <p className="break-words">
                   {message.content.map((c) => c.text).join("")}
                   {message.isThinking && (
-                     <span className="animate-pulse">...</span>
+                    <span className="animate-pulse">...</span>
                   )}
                 </p>
-                {message.role === 'model' && !message.isThinking && message.content[0].text && (
-                   <Button
-                    variant="ghost"
-                    size="icon"
-                    className="absolute -bottom-2 -right-2 h-7 w-7 rounded-full opacity-0 group-hover:opacity-100 transition-opacity bg-background"
-                    onClick={() => playAudio(message.content.map(c => c.text).join(""))}
-                    disabled={isGeneratingAudio || isPlaying}
-                  >
-                    {isGeneratingAudio ? <Loader2 className="h-4 w-4 animate-spin" /> : <Volume2 className="h-4 w-4" />}
-                    <span className="sr-only">Play audio</span>
-                  </Button>
-                )}
+                {message.role === "model" &&
+                  !message.isThinking &&
+                  message.content[0].text && (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="absolute -bottom-2 -right-2 h-7 w-7 rounded-full opacity-0 group-hover:opacity-100 transition-opacity bg-background"
+                      onClick={() =>
+                        playAudio(message.content.map((c) => c.text).join(""))
+                      }
+                      disabled={isGeneratingAudio || isPlaying}
+                    >
+                      {isGeneratingAudio ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Volume2 className="h-4 w-4" />
+                      )}
+                      <span className="sr-only">Play audio</span>
+                    </Button>
+                  )}
               </div>
             </div>
           ))}
@@ -227,15 +254,17 @@ export default function ChatPanel() {
       </ScrollArea>
       <div className="flex-shrink-0 border-t p-4">
         <form onSubmit={handleSubmit} className="flex items-center gap-3">
-            <Button
-                type="button"
-                size="icon"
-                variant={isListening ? "destructive" : "outline"}
-                onClick={handleMicClick}
-            >
-                <Mic className="h-4 w-4" />
-                <span className="sr-only">{isListening ? "Stop listening" : "Start listening"}</span>
-            </Button>
+          <Button
+            type="button"
+            size="icon"
+            variant={isListening ? "destructive" : "outline"}
+            onClick={handleMicClick}
+          >
+            <Mic className="h-4 w-4" />
+            <span className="sr-only">
+              {isListening ? "Stop listening" : "Start listening"}
+            </span>
+          </Button>
           <Input
             type="text"
             placeholder="Ask me to generate something..."
@@ -243,10 +272,7 @@ export default function ChatPanel() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
           />
-          <Button
-            type="submit"
-            size="icon"
-          >
+          <Button type="submit" size="icon">
             <Send className="h-4 w-4" />
             <span className="sr-only">Send</span>
           </Button>

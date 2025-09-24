@@ -1,16 +1,19 @@
 "use client";
 
+import { useState } from "react";
 import ChatPanel from "@/components/cogni-canvas/chat-panel";
-import DummyCanvas from "@/components/cogni-canvas/dummy-canvas";
+import Canvas from "@/components/cogni-canvas/canvas";
 
 export default function WorkspacePage() {
+  const [imageUrl, setImageUrl] = useState("");
+
   return (
     <main className="h-full w-full flex flex-row">
-      <div className="w-1/2 h-full flex flex-col border-r">
-        <ChatPanel />
+      <div className="w-[384px] h-full flex flex-col border-r flex-shrink-0">
+        <ChatPanel setImageUrl={setImageUrl} />
       </div>
-      <div className="w-1/2 h-full flex flex-col">
-        <DummyCanvas />
+      <div className="flex-grow h-full flex flex-col">
+        <Canvas imageUrl={imageUrl} />
       </div>
     </main>
   );
