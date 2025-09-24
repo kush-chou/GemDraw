@@ -18,20 +18,13 @@ const GeminiLogo = () => (
   >
     <defs>
       <linearGradient id="gemini-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" style={{ stopColor: "#aca7f2" }} />
-        <stop offset="100%" style={{ stopColor: "#2c2c5c" }} />
+        <stop offset="0%" stopColor="#8A63D2" />
+        <stop offset="100%" stopColor="#4A90E2" />
       </linearGradient>
     </defs>
     <path
       fill="url(#gemini-gradient)"
-      d="M50 0 L65 35 L50 100 L35 35 Z"
-      transform="rotate(45 50 50) scale(0.7)"
-    />
-    <path
-      fill="url(#gemini-gradient)"
-      d="M50 0 L100 50 L50 100 L0 50 Z"
-      transform="scale(0.85)"
-      style={{ transformOrigin: '50% 50%' }}
+      d="M50 0 C100 0 100 50 100 50 C100 100 50 100 50 100 C0 100 0 50 0 50 C0 0 50 0 50 0 Z"
     />
   </svg>
 );
