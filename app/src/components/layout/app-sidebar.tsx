@@ -1,4 +1,3 @@
-
 'use client';
 
 import {
@@ -12,7 +11,6 @@ import {
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { ThemeToggle } from '@/components/theme-toggle';
-import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
 const AppSidebar = () => {
