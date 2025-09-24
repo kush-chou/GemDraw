@@ -21,10 +21,7 @@ export async function chat(
   history: z.infer<typeof ChatInputSchema>['history'],
   message: string
 ) {
-  const model = ai.getModel('googleai/gemini-2.5-flash');
-
   const {stream, response} = ai.generateStream({
-    model,
     prompt: {
       history,
       messages: [{role: 'user', content: [{text: message}]}],
