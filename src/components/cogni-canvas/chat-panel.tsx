@@ -1,12 +1,11 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { Send } from "lucide-react";
-import { useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
+import { chat } from "@/ai/flows/chat-flow";
 
 const GeminiLogo = () => (
   <svg
@@ -31,56 +30,99 @@ const GeminiLogo = () => (
   </svg>
 );
 
-const avatarYou = PlaceHolderImages.find((img) => img.id === "avatar-you");
-const avatarGemini = PlaceHolderImages.find(
-  (img) => img.id === "avatar-gemini"
-);
-
 const initialMessages = [
   {
-    id: 1,
-    name: "You",
-    avatar: avatarYou?.imageUrl,
-    avatarHint: avatarYou?.imageHint,
-    text: "Hi Gemini, I'm having trouble understanding trigonometry. Can you help?",
-    isCurrentUser: true,
-  },
-  {
-    id: 2,
-    name: "Gemini",
-    avatar: avatarGemini?.imageUrl,
-    avatarHint: avatarGemini?.imageHint,
-    text: "Of course! Trigonometry is all about the relationships between the angles and sides of triangles. A great place to start is with SOH CAH TOA. Have you heard of it?",
-  },
-  {
-    id: 3,
-    name: "You",
-    avatar: avatarYou?.imageUrl,
-    avatarHint: avatarYou?.imageHint,
-    text: "Vaguely... what does it stand for?",
-    isCurrentUser: true,
-  },
-  {
-    id: 4,
-    name: "Gemini",
-    avatar: avatarGemini?.imageUrl,
-    avatarHint: avatarGemini?.imageHint,
-    text: "It's a mnemonic to remember the basic trigonometric ratios. Sine = Opposite / Hypotenuse (SOH), Cosine = Adjacent / Hypotenuse (CAH), and Tangent = Opposite / Adjacent (TOA).",
+    role: "model" as const,
+    content: [{ text: "Hello! How can I help you today?" }],
   },
 ];
 
 type Message = {
-  id: number;
-  name: string;
-  avatar?: string;
-  avatarHint?: string;
-  text: string;
-  isCurrentUser: boolean;
-  action?: string;
+  role: "user" | "model";
+  content: { text: string }[];
+  isThinking?: boolean;
 };
 
 export default function ChatPanel() {
   const [messages, setMessages] = useState<Message[]>(initialMessages);
+  const [input, setInput] = useState("");
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    if (scrollAreaRef.current) {
+      const viewport = scrollAreaRef.current.querySelector("div");
+      if (viewport) {
+        viewport.scrollTop = viewport.scrollHeight;
+      }
+    }
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!input.trim()) return;
+
+    const newUserMessage: Message = {
+      role: "user",
+      content: [{ text: input }],
+    };
+    const thinkingMessage: Message = {
+      role: "model",
+      content: [{ text: "Thinking..." }],
+      isThinking: true,
+    };
+    const newMessages = [...messages, newUserMessage, thinkingMessage];
+    setMessages(newMessages);
+    setInput("");
+
+    const history = messages.map(({ role, content }) => ({
+      role,
+      content: content.map(({ text }) => ({ text })),
+    }));
+
+    try {
+      const stream = await chat(history, input);
+      const reader = stream.getReader();
+      const decoder = new TextDecoder();
+      let streamedResponse = "";
+      
+      setMessages((prevMessages) =>
+        prevMessages.map((msg, index) =>
+          index === prevMessages.length - 1
+            ? { ...msg, content: [{ text: "" }], isThinking: false }
+            : msg
+        )
+      );
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        const chunk = decoder.decode(value, { stream: true });
+        streamedResponse += chunk;
+
+        setMessages((prevMessages) => {
+          const updatedMessages = [...prevMessages];
+          const lastMessage = updatedMessages[updatedMessages.length - 1];
+          if (lastMessage && lastMessage.role === "model") {
+            lastMessage.content = [{ text: streamedResponse }];
+          }
+          return updatedMessages;
+        });
+      }
+    } catch (error) {
+      console.error("Error during chat:", error);
+      setMessages((prevMessages) =>
+        prevMessages.map((msg, index) =>
+          index === prevMessages.length - 1
+            ? { ...msg, content: [{ text: "Sorry, something went wrong." }], isThinking: false }
+            : msg
+        )
+      );
+    }
+  };
 
   return (
     <div className="flex flex-col h-full">
@@ -89,40 +131,47 @@ export default function ChatPanel() {
           AI Tutor Chat
         </h2>
       </header>
-      <ScrollArea className="flex-grow p-4">
+      <ScrollArea className="flex-grow p-4" ref={scrollAreaRef}>
         <div className="space-y-6">
-          {messages.map((message) => (
+          {messages.map((message, index) => (
             <div
-              key={message.id}
+              key={index}
               className={`flex items-start gap-3 ${
-                message.isCurrentUser ? "flex-row-reverse" : ""
+                message.role === "user" ? "flex-row-reverse" : ""
               }`}
             >
-              {!message.isCurrentUser && (
-                <Avatar className="h-8 w-8">
+              {message.role === "model" && (
+                <div className="h-8 w-8 flex-shrink-0">
                   <GeminiLogo />
-                </Avatar>
+                </div>
               )}
               <div
                 className={`max-w-[75%] rounded-lg p-3 text-sm ${
-                  message.isCurrentUser ? "bg-primary/20" : "bg-muted"
+                  message.role === "user" ? "bg-primary/20" : "bg-muted"
                 }`}
               >
-                {!message.isCurrentUser && (
-                  <p className="font-semibold mb-1">{message.name}</p>
+                {message.role === "model" && (
+                  <p className="font-semibold mb-1">Gemini</p>
                 )}
-                <p className="break-words">{message.text}</p>
+                <p className="break-words">
+                  {message.content.map((c) => c.text).join("")}
+                  {message.isThinking && (
+                     <span className="animate-pulse">...</span>
+                  )}
+                </p>
               </div>
             </div>
           ))}
         </div>
       </ScrollArea>
       <div className="flex-shrink-0 border-t border-border p-4">
-        <form className="flex items-center gap-2">
+        <form onSubmit={handleSubmit} className="flex items-center gap-2">
           <Input
             type="text"
             placeholder="Type your message..."
             className="flex-grow"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
           />
           <Button
             type="submit"
