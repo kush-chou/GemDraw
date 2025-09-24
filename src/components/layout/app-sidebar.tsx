@@ -67,11 +67,11 @@ const AppSidebar = () => {
             <SidebarMenuButton
               asChild
               isActive={pathname === '/gallery'}
-              tooltip="Gallery"
+              tooltip="Canvas Gallery"
             >
               <Link href="/gallery">
                 <Image />
-                <span>Gallery</span>
+                <span>Canvas Gallery</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>

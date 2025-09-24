@@ -50,7 +50,7 @@ export default function DashboardPage() {
                     <CardContent className="p-6 flex flex-col items-start justify-between h-full">
                        <div>
                             <Image className="h-8 w-8 text-primary mb-4" />
-                            <h2 className="text-xl font-semibold">Image Gallery</h2>
+                            <h2 className="text-xl font-semibold">Canvas Gallery</h2>
                             <p className="text-muted-foreground mt-1">
                                 View your generated images.
                             </p>
