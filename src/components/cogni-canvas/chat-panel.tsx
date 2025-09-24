@@ -86,7 +86,6 @@ export default function ChatPanel() {
     try {
       const stream = await chat(history, input);
       const reader = stream.getReader();
-      const decoder = new TextDecoder();
       let streamedResponse = "";
       
       setMessages((prevMessages) =>
@@ -100,8 +99,8 @@ export default function ChatPanel() {
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
-        const chunk = decoder.decode(value, { stream: true });
-        streamedResponse += chunk;
+        // The value is already a string, no need for TextDecoder
+        streamedResponse += value;
 
         setMessages((prevMessages) => {
           const updatedMessages = [...prevMessages];
