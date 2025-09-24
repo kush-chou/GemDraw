@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { BookOpen } from "lucide-react";
-import CourseAssistantPanel from "@/components/cogni-canvas/course-assistant-panel";
 
 export default function CourseDetailPage({ params }: { params: { courseId: string } }) {
   const course = courses.find((c) => c.id === params.courseId);
@@ -14,8 +13,8 @@ export default function CourseDetailPage({ params }: { params: { courseId: strin
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex-grow flex h-screen">
-        <div className="w-2/3 h-full flex flex-col border-r overflow-y-auto">
+      <div className="flex-grow flex flex-col">
+        <div className="w-full h-full flex flex-col overflow-y-auto">
           <header className="p-6 md:p-8 border-b flex-shrink-0">
             <div className="flex items-start gap-6">
                 <div className="relative w-32 h-32 aspect-square rounded-lg overflow-hidden flex-shrink-0 border">
@@ -53,9 +52,6 @@ export default function CourseDetailPage({ params }: { params: { courseId: strin
               ))}
             </Accordion>
           </main>
-        </div>
-        <div className="w-1/3 h-full flex flex-col">
-            <CourseAssistantPanel course={course} />
         </div>
       </div>
     </div>
