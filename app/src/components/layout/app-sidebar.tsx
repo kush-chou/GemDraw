@@ -2,105 +2,73 @@
 'use client';
 
 import {
-  SidebarHeader,
-  SidebarContent,
-  SidebarFooter,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuButton,
-  SidebarTrigger,
-} from '@/components/ui/sidebar';
-import { LayoutDashboard, Settings, Image, Bot, GraduationCap, PenSquare } from 'lucide-react';
+  LayoutDashboard,
+  Settings,
+  Image,
+  Bot,
+  GraduationCap,
+  PenSquare,
+} from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 
 const AppSidebar = () => {
   const pathname = usePathname();
 
+  const menuItems = [
+    { href: '/', label: 'Dashboard', icon: LayoutDashboard, isActive: pathname === '/' },
+    { href: '/workspace', label: 'Workspace', icon: PenSquare, isActive: pathname === '/workspace' },
+    { href: '/courses', label: 'Courses', icon: GraduationCap, isActive: pathname.startsWith('/courses') },
+    { href: '/gallery', label: 'Canvas Gallery', icon: Image, isActive: pathname === '/gallery' },
+  ];
+
   return (
-    <>
-      <SidebarHeader>
-        <div className="flex items-center justify-between p-2">
-            <div className='flex items-center gap-2'>
-                <Bot className="w-6 h-6" />
-                <span className="font-semibold text-lg">CogniCanvas</span>
-            </div>
-            <SidebarTrigger />
+    <aside className="w-64 flex flex-col border-r bg-background">
+      <div className="p-4 border-b">
+        <div className="flex items-center gap-2">
+          <Bot className="w-6 h-6" />
+          <span className="font-semibold text-lg">CogniCanvas</span>
         </div>
-      </SidebarHeader>
-      <SidebarContent className="flex-grow">
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              isActive={pathname === '/'}
-              tooltip="Dashboard"
-            >
-              <Link href="/">
-                <LayoutDashboard />
-                <span>Dashboard</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              isActive={pathname === '/workspace'}
-              tooltip="Workspace"
-            >
-              <Link href="/workspace">
-                <PenSquare />
-                <span>Workspace</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-           <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              isActive={pathname.startsWith('/courses')}
-              tooltip="Courses"
-            >
-              <Link href="/courses">
-                <GraduationCap />
-                <span>Courses</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              isActive={pathname === '/gallery'}
-              tooltip="Canvas Gallery"
-            >
-              <Link href="/gallery">
-                <Image />
-                <span>Canvas Gallery</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarContent>
-      <SidebarFooter>
-         <SidebarMenu>
-          <SidebarMenuItem>
-             <SidebarMenuButton
+      </div>
+      <nav className="flex-grow p-2">
+        <ul className="space-y-1">
+          {menuItems.map((item) => (
+            <li key={item.href}>
+              <Button
                 asChild
-                isActive={pathname === '/settings'}
-                tooltip="Settings"
+                variant={item.isActive ? 'secondary' : 'ghost'}
+                className="w-full justify-start"
               >
-                <Link href="/settings">
-                  <Settings />
-                  <span>Settings</span>
+                <Link href={item.href}>
+                  <item.icon className="mr-2 h-4 w-4" />
+                  <span>{item.label}</span>
                 </Link>
-              </SidebarMenuButton>
-          </SidebarMenuItem>
-         </SidebarMenu>
-         <div className="p-2 flex justify-center">
-            <ThemeToggle />
-          </div>
-      </SidebarFooter>
-    </>
+              </Button>
+            </li>
+          ))}
+        </ul>
+      </nav>
+      <div className="p-2 border-t">
+        <div className="space-y-1">
+            <Button
+                asChild
+                variant={pathname === '/settings' ? 'secondary' : 'ghost'}
+                className="w-full justify-start"
+            >
+                <Link href="/settings">
+                <Settings className="mr-2 h-4 w-4" />
+                <span>Settings</span>
+                </Link>
+            </Button>
+        </div>
+        <div className="p-2 flex justify-center mt-2">
+          <ThemeToggle />
+        </div>
+      </div>
+    </aside>
   );
 };
 

@@ -1,6 +1,5 @@
 import type {Metadata} from 'next';
 import './globals.css';
-import {Sidebar, SidebarProvider, SidebarInset} from '@/components/ui/sidebar';
 import AppSidebar from '@/components/layout/app-sidebar';
 import { ThemeProvider } from '@/components/theme-provider';
 
@@ -30,12 +29,10 @@ export default function RootLayout({
       </head>
       <body className="font-body antialiased">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <SidebarProvider>
-            <Sidebar variant="inset" collapsible="icon">
-              <AppSidebar />
-            </Sidebar>
-            <SidebarInset>{children}</SidebarInset>
-          </SidebarProvider>
+          <div className="flex min-h-screen">
+            <AppSidebar />
+            <main className="flex-1">{children}</main>
+          </div>
         </ThemeProvider>
       </body>
     </html>
