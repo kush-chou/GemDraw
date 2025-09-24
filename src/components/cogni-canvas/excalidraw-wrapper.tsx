@@ -4,6 +4,12 @@ import { useEffect, useState } from "react";
 import type { ExcalidrawElement } from "@excalidraw/excalidraw/types/element/types";
 import type { AppState, ExcalidrawProps } from "@excalidraw/excalidraw/types/types";
 
+// Dynamically import Excalidraw with SSR disabled
+const Excalidraw =
+  typeof window !== "undefined"
+    ? require("@excalidraw/excalidraw").Excalidraw
+    : () => null;
+
 interface ExcalidrawWrapperProps {
   initialElements: readonly ExcalidrawElement[];
   onChange: (
@@ -17,15 +23,15 @@ const ExcalidrawWrapper = ({
   initialElements,
   onChange,
 }: ExcalidrawWrapperProps) => {
-  const [Excalidraw, setExcalidraw] = useState<React.ComponentType<ExcalidrawProps> | null>(null);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    import("@excalidraw/excalidraw").then((mod) => setExcalidraw(() => mod.Excalidraw));
+    setIsClient(true);
   }, []);
 
   return (
     <div className="h-full w-full">
-      {Excalidraw ? (
+      {isClient ? (
         <Excalidraw
           key={JSON.stringify(initialElements)}
           initialData={{
