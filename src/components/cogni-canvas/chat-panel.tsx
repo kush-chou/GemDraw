@@ -84,7 +84,7 @@ export default function ChatPanel() {
 
   return (
     <div className="flex flex-col h-full">
-      <header className="flex h-16 flex-shrink-0 items-center border-b border-border bg-primary px-4 rounded-t-lg">
+      <header className="flex h-16 flex-shrink-0 items-center border-b border-border bg-primary px-4 rounded-tl-lg">
         <h2 className="text-lg font-semibold text-primary-foreground">
           AI Tutor Chat
         </h2>
