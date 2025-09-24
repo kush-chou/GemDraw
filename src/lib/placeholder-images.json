@@ -23,6 +23,12 @@
       "description": "Avatar for Charlie",
       "imageUrl": "https://images.unsplash.com/photo-1724762114104-9a23e9e3d359?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxkZXNpZ25lciUyMHBvcnRyYWl0fGVufDB8fHx8MTc1ODcxMzU5Nnww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "designer portrait"
+    },
+    {
+      "id": "avatar-gemini",
+      "description": "Avatar for Gemini AI",
+      "imageUrl": "https://images.unsplash.com/photo-1673255745677-e36f618550d1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxBSSUyMHJvYm90fGVufDB8fHx8MTc1ODcyMzUwN3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "AI robot"
     }
   ]
 }

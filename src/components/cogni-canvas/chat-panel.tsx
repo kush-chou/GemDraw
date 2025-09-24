@@ -7,41 +7,40 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { Send } from "lucide-react";
 
-const avatarAlice = PlaceHolderImages.find(img => img.id === 'avatar-alice');
-const avatarBob = PlaceHolderImages.find(img => img.id === 'avatar-bob');
 const avatarYou = PlaceHolderImages.find(img => img.id === 'avatar-you');
-const avatarCharlie = PlaceHolderImages.find(img => img.id === 'avatar-charlie');
+const avatarGemini = PlaceHolderImages.find(img => img.id === 'avatar-gemini');
 
 
 const messages = [
   {
     id: 1,
-    name: "Alice",
-    avatar: avatarAlice?.imageUrl,
-    avatarHint: avatarAlice?.imageHint,
-    text: "Hey everyone! Let's start brainstorming on the new logo design.",
+    name: "You",
+    avatar: avatarYou?.imageUrl,
+    avatarHint: avatarYou?.imageHint,
+    text: "Hi Gemini, I'm having trouble understanding trigonometry. Can you help?",
+    isCurrentUser: true,
   },
   {
     id: 2,
-    name: "Bob",
-    avatar: avatarBob?.imageUrl,
-    avatarHint: avatarBob?.imageHint,
-    text: "Sure! I'm thinking something minimalist. I'll sketch out an idea.",
+    name: "Gemini",
+    avatar: avatarGemini?.imageUrl,
+    avatarHint: avatarGemini?.imageHint,
+    text: "Of course! Trigonometry is all about the relationships between the angles and sides of triangles. A great place to start is with SOH CAH TOA. Have you heard of it?",
   },
   {
     id: 3,
     name: "You",
     avatar: avatarYou?.imageUrl,
     avatarHint: avatarYou?.imageHint,
-    text: "Great idea. Maybe we can use a soft color palette?",
+    text: "Vaguely... what does it stand for?",
     isCurrentUser: true,
   },
    {
     id: 4,
-    name: "Charlie",
-    avatar: avatarCharlie?.imageUrl,
-    avatarHint: avatarCharlie?.imageHint,
-    text: "I like that. I've added a color swatch to the canvas.",
+    name: "Gemini",
+    avatar: avatarGemini?.imageUrl,
+    avatarHint: avatarGemini?.imageHint,
+    text: "It's a mnemonic to remember the basic trigonometric ratios. Sine = Opposite / Hypotenuse (SOH), Cosine = Adjacent / Hypotenuse (CAH), and Tangent = Opposite / Adjacent (TOA). I can draw a diagram for you on the canvas.",
   },
 ];
 
@@ -50,7 +49,7 @@ export default function ChatPanel() {
     <div className="flex flex-col h-full">
       <header className="flex h-16 flex-shrink-0 items-center border-b border-border bg-primary px-4">
         <h2 className="text-lg font-semibold text-primary-foreground">
-          Chat & Tools
+          AI Tutor Chat
         </h2>
       </header>
       <ScrollArea className="flex-grow p-4">
