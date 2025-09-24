@@ -10,6 +10,32 @@ import type { ExcalidrawElement } from "@excalidraw/excalidraw/types/element/typ
 import { useState } from "react";
 import { drawDiagram } from "@/ai/flows/draw-diagram-flow";
 
+const GeminiLogo = () => (
+  <svg
+    viewBox="0 0 100 100"
+    xmlns="http://www.w3.org/2000/svg"
+    className="h-full w-full"
+  >
+    <defs>
+      <linearGradient id="gemini-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style={{ stopColor: "#aca7f2" }} />
+        <stop offset="100%" style={{ stopColor: "#2c2c5c" }} />
+      </linearGradient>
+    </defs>
+    <path
+      fill="url(#gemini-gradient)"
+      d="M50 0 L65 35 L50 100 L35 35 Z"
+      transform="rotate(45 50 50) scale(0.7)"
+    />
+    <path
+      fill="url(#gemini-gradient)"
+      d="M50 0 L100 50 L50 100 L0 50 Z"
+      transform="scale(0.85)"
+      style={{ transformOrigin: '50% 50%' }}
+    />
+  </svg>
+);
+
 const avatarYou = PlaceHolderImages.find((img) => img.id === "avatar-you");
 const avatarGemini = PlaceHolderImages.find(
   (img) => img.id === "avatar-gemini"
@@ -98,14 +124,20 @@ export default function ChatPanel({ setSceneElements }: ChatPanelProps) {
               }`}
             >
               <Avatar className="h-8 w-8">
-                <AvatarImage
-                  src={message.avatar}
-                  alt={message.name}
-                  data-ai-hint={message.avatarHint}
-                />
-                <AvatarFallback>
-                  {message.name.charAt(0).toUpperCase()}
-                </AvatarFallback>
+                {message.name === 'Gemini' ? (
+                  <GeminiLogo />
+                ) : (
+                  <>
+                    <AvatarImage
+                      src={message.avatar}
+                      alt={message.name}
+                      data-ai-hint={message.avatarHint}
+                    />
+                    <AvatarFallback>
+                      {message.name.charAt(0).toUpperCase()}
+                    </AvatarFallback>
+                  </>
+                )}
               </Avatar>
               <div
                 className={`max-w-[75%] rounded-lg p-3 text-sm ${
