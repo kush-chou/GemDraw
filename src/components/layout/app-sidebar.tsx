@@ -9,7 +9,7 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from '@/components/ui/sidebar';
-import { LayoutDashboard, MessageSquare, Settings } from 'lucide-react';
+import { LayoutDashboard, MessageSquare, Settings, Image, Bot } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
@@ -21,15 +21,7 @@ const AppSidebar = () => {
     <>
       <SidebarHeader>
         <div className="flex items-center gap-2">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            className="w-6 h-6"
-            fill="currentColor"
-          >
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-12h2v4h-2v-4zm0 6h2v2h-2v-2z" />
-          </svg>
-
+          <Bot className="w-6 h-6" />
           <span className="font-semibold text-lg">CogniCanvas</span>
         </div>
       </SidebarHeader>
@@ -56,6 +48,30 @@ const AppSidebar = () => {
               <Link href="/workspace">
                 <MessageSquare />
                 <span>Workspace</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              isActive={pathname === '/chats'}
+              tooltip="All Chats"
+            >
+              <Link href="/chats">
+                <MessageSquare />
+                <span>All Chats</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              isActive={pathname === '/gallery'}
+              tooltip="Gallery"
+            >
+              <Link href="/gallery">
+                <Image />
+                <span>Gallery</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>

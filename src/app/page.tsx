@@ -44,13 +44,17 @@ export default function DashboardPage() {
                 <CardDescription>Navigate to key areas of the app.</CardDescription>
               </CardHeader>
               <CardContent className="flex flex-col space-y-2">
-                 <Button variant="outline" className="justify-start">
-                   <MessageSquare className="mr-2 h-4 w-4" />
-                   All Chats
+                 <Button variant="outline" className="justify-start" asChild>
+                  <Link href="/chats">
+                    <MessageSquare className="mr-2 h-4 w-4" />
+                    All Chats
+                  </Link>
                  </Button>
-                 <Button variant="outline" className="justify-start">
-                   <Image className="mr-2 h-4 w-4" />
-                   Image Gallery
+                 <Button variant="outline" className="justify-start" asChild>
+                  <Link href="/gallery">
+                    <Image className="mr-2 h-4 w-4" />
+                    Image Gallery
+                  </Link>
                  </Button>
               </CardContent>
             </Card>
