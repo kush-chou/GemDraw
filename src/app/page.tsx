@@ -1,27 +1,12 @@
 "use client";
 
 import ChatPanel from "@/components/cogni-canvas/chat-panel";
-import ExcalidrawWrapper from "@/components/cogni-canvas/excalidraw-wrapper";
-import { useState } from "react";
-import type { ExcalidrawElement } from "@excalidraw/excalidraw/types/element/types";
 
 export default function Home() {
-  const [sceneElements, setSceneElements] = useState<ExcalidrawElement[]>([]);
-
-  const handleSceneChange = (elements: readonly ExcalidrawElement[]) => {
-    setSceneElements(elements as ExcalidrawElement[]);
-  };
-
   return (
-    <main className="flex h-screen w-full bg-background">
-      <aside className="w-96 flex flex-col bg-card border-r border-border">
-        <ChatPanel setSceneElements={setSceneElements} />
-      </aside>
-      <div className="flex-grow h-full">
-        <ExcalidrawWrapper
-          initialElements={sceneElements}
-          onChange={handleSceneChange}
-        />
+    <main className="flex h-screen w-full justify-center items-center bg-background">
+      <div className="w-full max-w-2xl h-full md:h-[90vh] md:max-h-[800px] flex flex-col bg-card border border-border rounded-lg shadow-lg">
+        <ChatPanel />
       </div>
     </main>
   );
