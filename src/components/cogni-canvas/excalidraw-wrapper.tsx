@@ -14,7 +14,7 @@ interface ExcalidrawWrapperProps {
 }
 
 const Excalidraw = dynamic(
-  async () => (await import("@excalidraw/excalidraw")).Excalidraw,
+  () => import("@excalidraw/excalidraw").then((mod) => mod.Excalidraw),
   {
     ssr: false,
     loading: () => (
