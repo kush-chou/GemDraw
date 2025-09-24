@@ -14,7 +14,7 @@ export default function CourseDetailPage({ params }: { params: { courseId: strin
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex-grow flex h-[calc(100vh-theme(spacing.1))]">
+      <div className="flex-grow flex h-screen">
         <div className="w-2/3 h-full flex flex-col border-r overflow-y-auto">
           <header className="p-6 md:p-8 border-b flex-shrink-0">
             <div className="flex items-start gap-6">
