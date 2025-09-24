@@ -98,22 +98,11 @@ export default function ChatPanel() {
                 message.isCurrentUser ? "flex-row-reverse" : ""
               }`}
             >
-              <Avatar className="h-8 w-8">
-                {message.name === 'Gemini' ? (
+              {!message.isCurrentUser && (
+                <Avatar className="h-8 w-8">
                   <GeminiLogo />
-                ) : (
-                  <>
-                    <AvatarImage
-                      src={message.avatar}
-                      alt={message.name}
-                      data-ai-hint={message.avatarHint}
-                    />
-                    <AvatarFallback>
-                      {message.name.charAt(0).toUpperCase()}
-                    </AvatarFallback>
-                  </>
-                )}
-              </Avatar>
+                </Avatar>
+              )}
               <div
                 className={`max-w-[75%] rounded-lg p-3 text-sm ${
                   message.isCurrentUser ? "bg-primary/20" : "bg-muted"
