@@ -8,18 +8,18 @@ import { ArrowRight } from "lucide-react";
 export default function CoursesPage() {
   return (
     <div className="flex flex-col h-full">
-      <header className="p-6 border-b">
-        <h1 className="text-3xl font-bold">Courses</h1>
-        <p className="text-muted-foreground">
+      <header className="p-6 md:p-8 border-b">
+        <h1 className="text-4xl font-bold">Courses</h1>
+        <p className="text-muted-foreground mt-1">
           Browse our catalog of available courses.
         </p>
       </header>
-      <main className="flex-grow p-6">
+      <main className="flex-grow p-6 md:p-8">
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {courses.map((course) => (
-            <Card key={course.id} className="flex flex-col overflow-hidden hover:border-primary/50 transition-colors">
+            <Card key={course.id} className="flex flex-col overflow-hidden hover:bg-muted/50 transition-colors">
               <CardHeader>
-                <div className="relative aspect-video rounded-md overflow-hidden mb-4">
+                <div className="relative aspect-video rounded-md overflow-hidden mb-4 border">
                   <Image
                     src={course.imageUrl}
                     alt={course.title}
@@ -32,7 +32,7 @@ export default function CoursesPage() {
                 <CardDescription>{course.description}</CardDescription>
               </CardHeader>
               <CardContent className="flex-grow flex items-end">
-                <Button asChild className="w-full">
+                <Button asChild className="w-full" variant="outline">
                   <Link href={`/courses/${course.id}`}>
                     View Course <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>

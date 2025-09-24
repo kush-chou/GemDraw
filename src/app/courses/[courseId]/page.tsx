@@ -16,9 +16,9 @@ export default function CourseDetailPage({ params }: { params: { courseId: strin
     <div className="flex flex-col h-full">
       <div className="flex-grow flex h-[calc(100vh-theme(spacing.1))]">
         <div className="w-2/3 h-full flex flex-col border-r overflow-y-auto">
-          <header className="p-6 border-b flex-shrink-0">
-            <div className="flex items-start gap-4">
-                <div className="relative w-24 h-24 aspect-square rounded-lg overflow-hidden flex-shrink-0">
+          <header className="p-6 md:p-8 border-b flex-shrink-0">
+            <div className="flex items-start gap-6">
+                <div className="relative w-32 h-32 aspect-square rounded-lg overflow-hidden flex-shrink-0 border">
                     <Image
                         src={course.imageUrl}
                         alt={course.title}
@@ -28,21 +28,21 @@ export default function CourseDetailPage({ params }: { params: { courseId: strin
                     />
                 </div>
                 <div>
-                    <h1 className="text-3xl font-bold">{course.title}</h1>
-                    <p className="text-muted-foreground mt-1">{course.description}</p>
+                    <h1 className="text-4xl font-bold">{course.title}</h1>
+                    <p className="text-muted-foreground mt-2 max-w-prose">{course.description}</p>
                 </div>
             </div>
           </header>
-          <main className="flex-grow p-6">
+          <main className="flex-grow p-6 md:p-8">
             <h2 className="text-2xl font-semibold mb-4">Course Content</h2>
             <Accordion type="single" collapsible className="w-full">
               {course.subjects.map((subject) => (
                 <AccordionItem value={subject.id} key={subject.id}>
-                  <AccordionTrigger className="text-lg">{subject.title}</AccordionTrigger>
+                  <AccordionTrigger className="text-lg font-medium">{subject.title}</AccordionTrigger>
                   <AccordionContent>
-                    <ul className="space-y-2 pl-4">
+                    <ul className="space-y-2 pl-4 mt-2">
                       {subject.lessons.map((lesson) => (
-                        <li key={lesson.id} className="flex items-center gap-3 text-muted-foreground hover:text-foreground transition-colors">
+                        <li key={lesson.id} className="flex items-center gap-3 text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
                           <BookOpen className="h-4 w-4" />
                           <span>{lesson.title}</span>
                         </li>

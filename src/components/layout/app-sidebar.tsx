@@ -9,10 +9,9 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from '@/components/ui/sidebar';
-import { LayoutDashboard, MessageSquare, Settings, Image, Bot, GraduationCap } from 'lucide-react';
+import { LayoutDashboard, Settings, Image, Bot, GraduationCap, PenSquare } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 
 const AppSidebar = () => {
   const pathname = usePathname();
@@ -20,7 +19,7 @@ const AppSidebar = () => {
   return (
     <>
       <SidebarHeader>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 p-2">
           <Bot className="w-6 h-6" />
           <span className="font-semibold text-lg">CogniCanvas</span>
         </div>
@@ -46,7 +45,7 @@ const AppSidebar = () => {
               tooltip="Workspace"
             >
               <Link href="/workspace">
-                <MessageSquare />
+                <PenSquare />
                 <span>Workspace</span>
               </Link>
             </SidebarMenuButton>
@@ -60,18 +59,6 @@ const AppSidebar = () => {
               <Link href="/courses">
                 <GraduationCap />
                 <span>Courses</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              isActive={pathname === '/chats'}
-              tooltip="All Chats"
-            >
-              <Link href="/chats">
-                <MessageSquare />
-                <span>All Chats</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -103,18 +90,6 @@ const AppSidebar = () => {
                 </Link>
               </SidebarMenuButton>
           </SidebarMenuItem>
-           <SidebarMenuItem>
-             <div className="flex items-center gap-2 p-2 rounded-md">
-                <Avatar className="h-8 w-8">
-                    <AvatarImage src="https://picsum.photos/seed/user/40/40" alt="User" />
-                    <AvatarFallback>U</AvatarFallback>
-                </Avatar>
-                <div className="flex flex-col text-sm">
-                    <span className="font-semibold">User</span>
-                    <span className="text-muted-foreground">user@example.com</span>
-                </div>
-            </div>
-           </SidebarMenuItem>
          </SidebarMenu>
       </SidebarFooter>
     </>

@@ -9,7 +9,7 @@ import type { Course } from "@/lib/placeholder-courses";
 import { courseAssistant } from "@/ai/flows/course-assistant-flow";
 
 const AssistantLogo = () => (
-    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-blue-400 flex items-center justify-center text-primary-foreground">
+    <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground">
         <GraduationCap className="h-5 w-5" />
     </div>
 );
@@ -116,7 +116,7 @@ export default function CourseAssistantPanel({ course }: { course: Course }) {
             <div
               key={index}
               className={`flex items-start gap-3 ${
-                message.role === "user" ? "flex-row-reverse" : ""
+                message.role === "user" ? "justify-end" : ""
               }`}
             >
               {message.role === "model" && (
@@ -129,9 +129,6 @@ export default function CourseAssistantPanel({ course }: { course: Course }) {
                   message.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted"
                 }`}
               >
-                {message.role === "model" && (
-                  <p className="font-semibold mb-1">AI Tutor</p>
-                )}
                 <p className="break-words">
                   {message.content.map((c) => c.text).join("")}
                   {message.isThinking && (
