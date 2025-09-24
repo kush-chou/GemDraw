@@ -22,10 +22,8 @@ export async function chat(
   message: string
 ) {
   const {stream, response} = ai.generateStream({
-    prompt: {
-      history,
-      messages: [{role: 'user', content: [{text: message}]}],
-    },
+    prompt: message,
+    history: history,
   });
 
   // For server-side streaming, we need to return a ReadableStream
