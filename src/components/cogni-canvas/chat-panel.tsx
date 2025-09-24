@@ -6,12 +6,16 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { Send } from "lucide-react";
+import type { ExcalidrawElement } from "@excalidraw/excalidraw/types/element/types";
+import { useState } from "react";
+import { drawDiagram } from "@/ai/flows/draw-diagram-flow";
 
-const avatarYou = PlaceHolderImages.find(img => img.id === 'avatar-you');
-const avatarGemini = PlaceHolderImages.find(img => img.id === 'avatar-gemini');
+const avatarYou = PlaceHolderImages.find((img) => img.id === "avatar-you");
+const avatarGemini = PlaceHolderImages.find(
+  (img) => img.id === "avatar-gemini"
+);
 
-
-const messages = [
+const initialMessages = [
   {
     id: 1,
     name: "You",
@@ -35,16 +39,48 @@ const messages = [
     text: "Vaguely... what does it stand for?",
     isCurrentUser: true,
   },
-   {
+  {
     id: 4,
     name: "Gemini",
     avatar: avatarGemini?.imageUrl,
     avatarHint: avatarGemini?.imageHint,
     text: "It's a mnemonic to remember the basic trigonometric ratios. Sine = Opposite / Hypotenuse (SOH), Cosine = Adjacent / Hypotenuse (CAH), and Tangent = Opposite / Adjacent (TOA). I can draw a diagram for you on the canvas.",
+    action: "draw_soh_cah_toa",
   },
 ];
 
-export default function ChatPanel() {
+type Message = {
+  id: number;
+  name: string;
+  avatar?: string;
+  avatarHint?: string;
+  text: string;
+  isCurrentUser: boolean;
+  action?: string;
+};
+
+interface ChatPanelProps {
+  setSceneElements: (elements: ExcalidrawElement[]) => void;
+}
+
+export default function ChatPanel({ setSceneElements }: ChatPanelProps) {
+  const [messages, setMessages] = useState<Message[]>(initialMessages);
+  const [drawing, setDrawing] = useState(false);
+
+  const handleDraw = async (prompt: string) => {
+    setDrawing(true);
+    try {
+      const result = await drawDiagram({ prompt });
+      if (result.elements) {
+        setSceneElements(result.elements as ExcalidrawElement[]);
+      }
+    } catch (error) {
+      console.error("Error drawing diagram:", error);
+    } finally {
+      setDrawing(false);
+    }
+  };
+
   return (
     <div className="flex flex-col h-full">
       <header className="flex h-16 flex-shrink-0 items-center border-b border-border bg-primary px-4">
@@ -62,22 +98,34 @@ export default function ChatPanel() {
               }`}
             >
               <Avatar className="h-8 w-8">
-                <AvatarImage src={message.avatar} alt={message.name} data-ai-hint={message.avatarHint} />
+                <AvatarImage
+                  src={message.avatar}
+                  alt={message.name}
+                  data-ai-hint={message.avatarHint}
+                />
                 <AvatarFallback>
                   {message.name.charAt(0).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
               <div
                 className={`max-w-[75%] rounded-lg p-3 text-sm ${
-                  message.isCurrentUser
-                    ? "bg-primary/20"
-                    : "bg-muted"
+                  message.isCurrentUser ? "bg-primary/20" : "bg-muted"
                 }`}
               >
                 {!message.isCurrentUser && (
                   <p className="font-semibold mb-1">{message.name}</p>
                 )}
                 <p className="break-words">{message.text}</p>
+                {message.action && (
+                  <Button
+                    onClick={() => handleDraw(message.text)}
+                    disabled={drawing}
+                    className="mt-2"
+                    size="sm"
+                  >
+                    {drawing ? "Drawing..." : "Yes, please draw it!"}
+                  </Button>
+                )}
               </div>
             </div>
           ))}
@@ -90,7 +138,11 @@ export default function ChatPanel() {
             placeholder="Type your message..."
             className="flex-grow"
           />
-          <Button type="submit" className="bg-accent hover:bg-accent/90 text-accent-foreground flex-shrink-0" size="icon">
+          <Button
+            type="submit"
+            className="bg-accent hover:bg-accent/90 text-accent-foreground flex-shrink-0"
+            size="icon"
+          >
             <Send className="h-4 w-4" />
             <span className="sr-only">Send</span>
           </Button>
