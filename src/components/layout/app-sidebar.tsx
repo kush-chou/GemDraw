@@ -12,6 +12,7 @@ import {
 import { LayoutDashboard, Settings, Image, Bot, GraduationCap, PenSquare } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 const AppSidebar = () => {
   const pathname = usePathname();
@@ -91,6 +92,9 @@ const AppSidebar = () => {
               </SidebarMenuButton>
           </SidebarMenuItem>
          </SidebarMenu>
+         <div className="p-2 flex justify-center">
+            <ThemeToggle />
+          </div>
       </SidebarFooter>
     </>
   );

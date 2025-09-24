@@ -2,6 +2,7 @@ import type {Metadata} from 'next';
 import './globals.css';
 import {Sidebar, SidebarProvider, SidebarInset} from '@/components/ui/sidebar';
 import AppSidebar from '@/components/layout/app-sidebar';
+import { ThemeProvider } from '@/components/theme-provider';
 
 export const metadata: Metadata = {
   title: 'CogniCanvas',
@@ -14,7 +15,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="light">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
@@ -28,12 +29,14 @@ export default function RootLayout({
         />
       </head>
       <body className="font-body antialiased">
-        <SidebarProvider>
-          <Sidebar variant="inset" collapsible="icon">
-            <AppSidebar />
-          </Sidebar>
-          <SidebarInset>{children}</SidebarInset>
-        </SidebarProvider>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <SidebarProvider>
+            <Sidebar variant="inset" collapsible="icon">
+              <AppSidebar />
+            </Sidebar>
+            <SidebarInset>{children}</SidebarInset>
+          </SidebarProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
