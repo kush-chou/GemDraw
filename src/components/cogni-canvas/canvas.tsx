@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import {
   ExcalidrawImperativeAPIExtended,
   BinaryFileData,
+  ExcalidrawElement,
 } from "@excalidraw/excalidraw/types/types";
 import { getMimeType } from "@excalidraw/excalidraw";
 
@@ -15,9 +16,22 @@ const Excalidraw = dynamic(
   },
 );
 
-const Canvas = ({ imageUrl }: { imageUrl: string }) => {
+const Canvas = ({
+  imageUrl,
+  aiElements,
+}: {
+  imageUrl: string;
+  aiElements: ExcalidrawElement[];
+}) => {
   const [excalidrawAPI, setExcalidrawAPI] =
     useState<ExcalidrawImperativeAPIExtended | null>(null);
+  const [elements, setElements] = useState<ExcalidrawElement[]>([]);
+
+  useEffect(() => {
+    if (aiElements && aiElements.length > 0) {
+      setElements((prevElements) => [...prevElements, ...aiElements]);
+    }
+  }, [aiElements]);
 
   useEffect(() => {
     if (!imageUrl || !excalidrawAPI) {
@@ -56,7 +70,13 @@ const Canvas = ({ imageUrl }: { imageUrl: string }) => {
 
   return (
     <div className="h-full w-full">
-      <Excalidraw excalidrawAPI={(api) => setExcalidrawAPI(api)} />
+      <Excalidraw
+        excalidrawAPI={(api) => setExcalidrawAPI(api)}
+        initialData={{
+          elements,
+        }}
+        onChange={(newElements) => setElements(newElements)}
+      />
     </div>
   );
 };

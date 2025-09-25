@@ -3,9 +3,11 @@
 import { useState } from "react";
 import ChatPanel from "@/components/cogni-canvas/chat-panel";
 import Canvas from "@/components/cogni-canvas/canvas";
+import { ExcalidrawElement } from "@excalidraw/excalidraw/types/types";
 
 export default function WorkspacePage() {
   const [imageUrl, setImageUrl] = useState("");
+  const [aiElements, setAiElements] = useState<ExcalidrawElement[]>([]);
 
   return (
     <main className="h-full w-full flex flex-row">
@@ -13,7 +15,7 @@ export default function WorkspacePage() {
         <ChatPanel setImageUrl={setImageUrl} />
       </div>
       <div className="flex-grow h-full flex flex-col">
-        <Canvas imageUrl={imageUrl} />
+        <Canvas imageUrl={imageUrl} aiElements={aiElements} />
       </div>
     </main>
   );
